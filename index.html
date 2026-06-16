@@ -2374,18 +2374,21 @@ section { padding: 100px 0; }
 <!-- Claude AI Chat Widget + Tawk.to Live Chat Rollover -->
 <style>
 #knob-chat-btn {
-  position: fixed; bottom: 28px; right: 100px; z-index: 9000;
-  width: 60px; height: 60px; border-radius: 50%;
+  position: fixed; bottom: 28px; right: 28px; z-index: 9000;
+  height: 52px; border-radius: 26px;
+  padding: 0 20px 0 14px;
   background: linear-gradient(135deg, #c09a50, #a07830);
   border: none; cursor: pointer;
   box-shadow: 0 4px 20px rgba(0,0,0,.3);
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center; gap: 8px;
   transition: transform .2s, box-shadow .2s;
-  font-size: 1.6rem;
+  font-size: .85rem; font-weight: 600;
+  color: #fff; font-family: Georgia, sans-serif;
+  white-space: nowrap;
 }
-#knob-chat-btn:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(0,0,0,.4); }
+#knob-chat-btn:hover { transform: scale(1.04); box-shadow: 0 6px 28px rgba(0,0,0,.4); }
 .chat-notif {
-  position: absolute; top: -2px; right: -2px;
+  position: absolute; top: -6px; right: -6px;
   width: 18px; height: 18px; border-radius: 50%;
   background: #e74c3c; border: 2px solid #fff;
   display: flex; align-items: center; justify-content: center;
@@ -2396,7 +2399,7 @@ section { padding: 100px 0; }
   0%,100% { transform: scale(1); } 50% { transform: scale(1.2); }
 }
 #knob-chat-window {
-  position: fixed; bottom: 100px; right: 100px; z-index: 9000;
+  position: fixed; bottom: 100px; right: 28px; z-index: 9000;
   width: 360px; max-width: calc(100vw - 40px);
   background: #fff; border-radius: 16px;
   box-shadow: 0 12px 48px rgba(0,0,0,.2);
@@ -2515,7 +2518,11 @@ section { padding: 100px 0; }
 </style>
 
 <button id="knob-chat-btn" onclick="toggleKnobChat()" aria-label="Chat with us">
-  🏔<div class="chat-notif">1</div>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2C6.48 2 2 6.02 2 11c0 2.76 1.28 5.24 3.31 6.93L4 22l4.36-1.74C9.39 20.71 10.67 21 12 21c5.52 0 10-4.02 10-9S17.52 2 12 2z" fill="white"/>
+  </svg>
+  <span>Ask us anything</span>
+  <div class="chat-notif">1</div>
 </button>
 
 <div id="knob-chat-window">
@@ -2635,25 +2642,16 @@ function switchToLiveChat() {
       document.getElementById('knob-chat-window').classList.remove('open');
       knobChatOpen = false;
     } else {
-      addKnobMsg('ai', "Please email us at 5knobview@gmail.com — we respond within the hour! 😊");
+      addKnobMsg('ai', "You can reach Steve directly at 5knobview@gmail.com — he responds personally, usually within the hour! 😊");
     }
   }, 800);
 }
 </script>
 
-<!--Start of Tawk.to Script-->
+<!--Start of Tawk.to Script — hidden by default, activated via "Chat with Steve" button -->
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-Tawk_API.onLoad = function() {
-  // Keep Tawk.to widget visible but move it to the left
-  // so it doesn't overlap our custom chat button on the right
-  Tawk_API.customStyle({
-    visibility: {
-      desktop: { position: 'bl', xOffset: 20, yOffset: 20 },
-      mobile:  { position: 'bl', xOffset: 10, yOffset: 10 }
-    }
-  });
-};
+Tawk_API.onLoad = function() { Tawk_API.hideWidget(); };
 (function(){
 var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
 s1.async=true;
