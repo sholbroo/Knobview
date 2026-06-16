@@ -2230,11 +2230,28 @@ section { padding: 100px 0; }
   /* ── Contact form success ── */
   const contactForm = document.querySelector('form[name="contact"]');
   if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-      setTimeout(() => {
+    contactForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const submitBtn = contactForm.querySelector('.contact-submit');
+      submitBtn.textContent = 'Sending...';
+      submitBtn.disabled = true;
+
+      try {
+        const formData = new FormData(contactForm);
+        await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(formData).toString()
+        });
         document.getElementById('contact-success').style.display = 'block';
         contactForm.reset();
-      }, 500);
+        submitBtn.textContent = 'Send Message →';
+        submitBtn.disabled = false;
+      } catch(err) {
+        submitBtn.textContent = 'Send Message →';
+        submitBtn.disabled = false;
+        alert('Something went wrong. Please email us at 5knobview@gmail.com');
+      }
     });
   }
 
