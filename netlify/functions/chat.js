@@ -4,7 +4,7 @@ exports.handler = async function(event, context) {
     return {
       statusCode: 200,
       headers: {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'https://knobview.com',
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Methods': 'POST, OPTIONS'
       },
@@ -22,7 +22,7 @@ exports.handler = async function(event, context) {
     console.error('ANTHROPIC_API_KEY is not set');
     return {
       statusCode: 500,
-      headers: { 'Access-Control-Allow-Origin': '*' },
+      headers: { 'Access-Control-Allow-Origin': 'https://knobview.com' },
       body: JSON.stringify({ reply: "Configuration error — API key missing." })
     };
   }
@@ -76,7 +76,7 @@ Keep responses warm, friendly and concise (2-4 sentences unless more detail is n
       console.error('Anthropic API error:', response.status, errorText);
       return {
         statusCode: 200,
-        headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
+        headers: { 'Access-Control-Allow-Origin': 'https://knobview.com', 'Content-Type': 'application/json' },
         body: JSON.stringify({ reply: "I'm having a moment — please email us at 5knobview@gmail.com and we'll get right back to you!" })
       };
     }
@@ -90,7 +90,7 @@ Keep responses warm, friendly and concise (2-4 sentences unless more detail is n
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': 'https://knobview.com'
       },
       body: JSON.stringify({ reply })
     };
@@ -99,7 +99,7 @@ Keep responses warm, friendly and concise (2-4 sentences unless more detail is n
     console.error('Chat function error:', err.message);
     return {
       statusCode: 200,
-      headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
+      headers: { 'Access-Control-Allow-Origin': 'https://knobview.com', 'Content-Type': 'application/json' },
       body: JSON.stringify({ reply: "Sorry, I had a hiccup! Please email us at 5knobview@gmail.com or click the live chat button below." })
     };
   }
