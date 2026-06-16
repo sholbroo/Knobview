@@ -2062,7 +2062,7 @@ section { padding: 100px 0; }
     <p class="section-eyebrow reveal">Get in Touch</p>
     <h2 class="section-title reveal reveal-delay-1">Have a question <em>before booking?</em></h2>
     <div class="rule reveal reveal-delay-2"></div>
-    <p class="reveal reveal-delay-2" style="color: var(--stone); margin-bottom: 36px; line-height: 1.8;">Steve and Henrietta personally respond to every inquiry — usually within the hour. Whether you have questions about the property, local activities, or special requests, we're happy to help.</p>
+    <p class="reveal reveal-delay-2" style="color: var(--stone); margin-bottom: 36px; line-height: 1.8;">Steve personally responds to every inquiry — usually within the hour. Whether you have questions about the property, local activities, or special requests, we're happy to help.</p>
 
     <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="contact-form reveal reveal-delay-2">
       <input type="hidden" name="form-name" value="contact">
@@ -2092,7 +2092,7 @@ section { padding: 100px 0; }
 
       <div class="contact-field">
         <label class="contact-label" for="cf-message">Message</label>
-        <textarea class="contact-input contact-textarea" id="cf-message" name="message" placeholder="Hi Steve and Henrietta, I have a question about..." required></textarea>
+        <textarea class="contact-input contact-textarea" id="cf-message" name="message" placeholder="Hi Steve, I have a question about..." required></textarea>
       </div>
 
       <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap; margin-top:8px;">
@@ -2101,7 +2101,7 @@ section { padding: 100px 0; }
       </div>
 
       <div id="contact-success" style="display:none; margin-top:20px; padding:16px 20px; background:#f0faf0; border:1px solid #b6ddb6; border-radius:8px; color:#2d7a3a; font-size:.9rem;">
-        ✅ Message sent! Steve and Henrietta will be in touch shortly.
+        ✅ Message sent! Steve will be in touch shortly.
       </div>
     </form>
   </div>
@@ -2374,7 +2374,7 @@ section { padding: 100px 0; }
 <!-- Claude AI Chat Widget + Tawk.to Live Chat Rollover -->
 <style>
 #knob-chat-btn {
-  position: fixed; bottom: 28px; right: 28px; z-index: 9000;
+  position: fixed; bottom: 28px; right: 100px; z-index: 9000;
   width: 60px; height: 60px; border-radius: 50%;
   background: linear-gradient(135deg, #c09a50, #a07830);
   border: none; cursor: pointer;
@@ -2396,7 +2396,7 @@ section { padding: 100px 0; }
   0%,100% { transform: scale(1); } 50% { transform: scale(1.2); }
 }
 #knob-chat-window {
-  position: fixed; bottom: 100px; right: 28px; z-index: 9000;
+  position: fixed; bottom: 100px; right: 100px; z-index: 9000;
   width: 360px; max-width: calc(100vw - 40px);
   background: #fff; border-radius: 16px;
   box-shadow: 0 12px 48px rgba(0,0,0,.2);
@@ -2540,7 +2540,7 @@ section { padding: 100px 0; }
     <button class="knob-suggest-btn" onclick="sendSuggestion('I want to talk to a real person')">Live chat</button>
   </div>
 
-  <button class="knob-live-chat-btn" onclick="switchToLiveChat()">💬 Chat with Steve &amp; Henrietta directly</button>
+  <button class="knob-live-chat-btn" onclick="switchToLiveChat()">💬 Chat with Steve directly</button>
 
   <div class="knob-chat-input-row">
     <input type="text" id="knob-chat-input" placeholder="Ask anything about Knobview…" onkeydown="if(event.key==='Enter') sendKnobMessage()">
@@ -2598,102 +2598,36 @@ async function sendKnobMessage(override) {
   if (!text) return;
   input.value = '';
 
+  // Live chat request — hand off to Tawk.to
+  if (/live|real person|human|steve|talk to|speak with/i.test(text)) {
+    addKnobMsg('user', text);
+    addKnobMsg('ai', 'Of course! Click "Chat with Steve directly" below to connect live, or email us at 5knobview@gmail.com. We typically respond within the hour! 😊');
+    return;
+  }
+
   addKnobMsg('user', text);
+  knobHistory.push({ role: 'user', content: text });
   showTyping();
 
-  const reply = await getKnobReply(text);
-  setTimeout(() => {
+  try {
+    const res = await fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: knobHistory })
+    });
+    const data = await res.json();
+    const reply = data.reply || "I'm not sure — please email us at 5knobview@gmail.com and we'll get right back to you!";
     removeTyping();
     addKnobMsg('ai', reply);
-    knobHistory.push({ role: 'user', content: text }, { role: 'assistant', content: reply });
-  }, 700 + Math.random() * 600);
-}
-
-function getKnobReply(q) {
-  const t = q.toLowerCase();
-
-  // Live chat / real person
-  if (/live|real person|human|steve|henrietta|talk to|speak with|call/i.test(t))
-    return Promise.resolve('Of course! Click "Chat with Steve & Henrietta directly" below to connect with us live, or email us at 5knobview@gmail.com. We typically respond within the hour! 😊');
-
-  // Booking / availability
-  if (/book|reserv|availab|dates|calendar|check.?in|check.?out/i.test(t))
-    return Promise.resolve('You can check availability and book directly on this page — just scroll down to the booking widget and select your dates! Booking direct saves you vs. Airbnb and VRBO since there are no platform service fees. Need help with specific dates? Email us at 5knobview@gmail.com 🏔');
-
-  // Price / cost / rates
-  if (/price|cost|rate|how much|fee|total|cheap|discount|save/i.test(t))
-    return Promise.resolve('Nightly rates vary by season and are set dynamically. Booking direct at knobview.com gives you the best price — you avoid the 15%+ service fees that Airbnb adds. There\'s a flat $175 cleaning fee and NC taxes of 12.75%. Use the savings calculator above the booking widget to see exactly how much you save! 💰');
-
-  // Hot tub
-  if (/hot.?tub|jacuzzi|spa/i.test(t))
-    return Promise.resolve('Yes! We have a private hot tub with stunning panoramic mountain views — one of our most loved features. Guests often say soaking in the hot tub while watching the sunrise or sunset is the highlight of their stay. 🏔♨️');
-
-  // Amenities / what's included
-  if (/amenit|includ|what.*have|feature|equip/i.test(t))
-    return Promise.resolve('Knobview Retreat has a private hot tub, outdoor fire table, gas grill, wraparound deck with mountain views, fully stocked kitchen, Bose sound system, Samsung smart TV, high-speed WiFi (96 Mbps), washer/dryer, fireplace, ping pong table, and hiking gear. It\'s fully stocked for a comfortable mountain getaway! 🎉');
-
-  // WiFi / internet
-  if (/wifi|wi-fi|internet|connect|network|password/i.test(t))
-    return Promise.resolve('We have high-speed WiFi at 96 Mbps — plenty for streaming, video calls, and working remotely. Network name: Knobview-Guest, password: Knobview. 📶');
-
-  // Bedrooms / sleeping / capacity
-  if (/bedroom|bed|sleep|guest|people|person|capacity|king|queen/i.test(t))
-    return Promise.resolve('Knobview Retreat has 3 bedrooms and 3 bathrooms, sleeping up to 6 guests. The master bedroom has a King bed with gorgeous mountain views, and both guest bedrooms have Queen beds. Everyone sleeps comfortably! 🛏');
-
-  // Location / distance / Asheville
-  if (/location|where|asheville|far|distance|drive|near|close|biltmore|black mountain/i.test(t))
-    return Promise.resolve('We\'re located in Swannanoa, NC at 2,900 feet elevation in the Blue Ridge Mountains — less than 20 minutes to Asheville, Biltmore Estate, and Black Mountain, and about 15 minutes to the Blue Ridge Parkway. Close to everything but feels wonderfully secluded! 🗺');
-
-  // Views
-  if (/view|scenery|scenic|mountain|panoram|sunset|sunrise|cloud/i.test(t))
-    return Promise.resolve('The views from Knobview Retreat are absolutely breathtaking — sweeping panoramic Blue Ridge Mountain vistas from the deck and hot tub. Guests consistently say the views exceeded their expectations. The valley clouds rolling in at sunrise are something truly special. 🌄');
-
-  // Pets
-  if (/pet|dog|cat|animal/i.test(t))
-    return Promise.resolve('Unfortunately we don\'t allow pets at Knobview Retreat. We know that\'s disappointing for pet owners! If you have questions about this policy feel free to email us at 5knobview@gmail.com. 🐾');
-
-  // Smoking
-  if (/smok|cigarette|vape/i.test(t))
-    return Promise.resolve('Smoking is not permitted inside the property. You\'re welcome to smoke outdoors on the deck. 🚭');
-
-  // Cancellation / refund
-  if (/cancel|refund|policy|change.*date/i.test(t))
-    return Promise.resolve('Our cancellation policy: full refund for cancellations made 30 or more days before check-in. Cancellations within 30 days are non-refundable unless the dates are re-booked. If you have a special situation, email us and we\'ll do our best to work with you. 📋');
-
-  // Check-in / check-out times
-  if (/check.?in|check.?out|arrival|depart|time|early|late/i.test(t))
-    return Promise.resolve('Check-in is at 4:00 PM and check-out is at 11:00 AM. Early check-in or late check-out may be available upon request — just ask us! 🔑');
-
-  // Hiking / outdoor activities
-  if (/hik|trail|outdoor|activit|waterfall|park|nature/i.test(t))
-    return Promise.resolve('The Blue Ridge area has world-class hiking! We\'re 15 minutes from the Blue Ridge Parkway, close to numerous waterfalls, and we keep hiking gear at the property for guests to use. Check out our Guest Guide at knobview-guest-guide.netlify.app for our favorite trail recommendations! 🥾');
-
-  // Asheville food / restaurants / beer
-  if (/food|restaur|eat|dining|beer|brew|drink|asheville/i.test(t))
-    return Promise.resolve('Asheville is a foodie paradise — just 20 minutes away! It\'s known as "Beer City USA" with dozens of craft breweries, plus amazing restaurants. Our Guest Guide at knobview-guest-guide.netlify.app has our personal favorites for restaurants, breweries, and local experiences. 🍺🍽');
-
-  // Reviews / ratings
-  if (/review|rating|star|superhost|trusted|verified/i.test(t))
-    return Promise.resolve('We\'re proud to have 435+ verified reviews across platforms — 5.0 stars on Airbnb with Superhost status (Top 1% of listings), and 10/10 on VRBO with 300+ reviews (Top 10% in the area). Our guests\' kind words mean everything to us! ⭐');
-
-  // Minimum stay
-  if (/minimum|min.*night|how many night|short/i.test(t))
-    return Promise.resolve('We have a 2-night minimum stay for most dates. Minimum stay may be longer during peak holiday periods. The booking widget will show you the exact requirements for your dates. 📅');
-
-  // Contact / questions
-  if (/contact|email|question|help|info|reach/i.test(t))
-    return Promise.resolve('We\'d love to hear from you! Email us at 5knobview@gmail.com — Steve and Henrietta personally respond to every message, usually within the hour. You can also click "Chat with Steve & Henrietta directly" below for live chat. 💬');
-
-  // Directions / parking
-  if (/direct|park|parking|car|drive to|get there|address/i.test(t))
-    return Promise.resolve('Parking is available on-site at the property with space for multiple vehicles. Full check-in instructions including the address and access details are sent after booking is confirmed. Any questions before booking? Email us at 5knobview@gmail.com! 🚗');
-
-  // Default fallback
-  return Promise.resolve('Great question! For the most accurate answer, email us at 5knobview@gmail.com — Steve and Henrietta respond personally, usually within the hour. Or click "Chat with Steve & Henrietta directly" below to connect live. We\'re happy to help make your stay perfect! 🏔');
+    knobHistory.push({ role: 'assistant', content: reply });
+  } catch(e) {
+    removeTyping();
+    addKnobMsg('ai', "Sorry, I had a hiccup! Please email us at 5knobview@gmail.com or click the live chat button below.");
+  }
 }
 
 function switchToLiveChat() {
-  addKnobMsg('system', 'Connecting you to Steve & Henrietta...');
+  addKnobMsg('system', 'Connecting you to Steve...');
   setTimeout(() => {
     if (typeof Tawk_API !== 'undefined' && Tawk_API.showWidget) {
       Tawk_API.showWidget();
@@ -2710,7 +2644,16 @@ function switchToLiveChat() {
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-Tawk_API.onLoad = function() { Tawk_API.hideWidget(); };
+Tawk_API.onLoad = function() {
+  // Keep Tawk.to widget visible but move it to the left
+  // so it doesn't overlap our custom chat button on the right
+  Tawk_API.customStyle({
+    visibility: {
+      desktop: { position: 'bl', xOffset: 20, yOffset: 20 },
+      mobile:  { position: 'bl', xOffset: 10, yOffset: 10 }
+    }
+  });
+};
 (function(){
 var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
 s1.async=true;
