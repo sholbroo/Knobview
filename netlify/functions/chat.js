@@ -50,7 +50,7 @@ Keep responses warm, friendly and concise (2-4 sentences unless more detail is n
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': 'https://knobview.com',
+        'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type'
       },
       body: JSON.stringify({ reply: data.content?.[0]?.text || "I'm not sure about that — please email us at 5knobview@gmail.com and we'll get right back to you!" })
