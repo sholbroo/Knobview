@@ -80,6 +80,25 @@
 }
 </script>
 
+<!-- Schema.org Structured Data — Promotional Video -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "Knobview Retreat Video Overview",
+  "description": "Walkthrough and video shots of Knobview Retreat",
+  "thumbnailUrl": "https://i.ytimg.com/vi/LC2gn-VvixM/maxresdefault.jpg",
+  "uploadDate": "2026-10-17",
+  "contentUrl": "https://youtu.be/LC2gn-VvixM",
+  "embedUrl": "https://www.youtube-nocookie.com/embed/LC2gn-VvixM",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Knobview Retreat",
+    "logo": { "@type": "ImageObject", "url": "https://i.imgur.com/e46z9YO.jpg" }
+  }
+}
+</script>
+
 
 <!-- Google Analytics 4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-9XH5BMLCLW"></script>
@@ -1098,6 +1117,26 @@ section { padding: 100px 0; }
 .host-bio:last-child { margin-bottom: 0; }
 
 /* ═══════════════════════════════════════
+   HOST VIDEO
+═══════════════════════════════════════ */
+.host-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 12px 36px rgba(59,47,42,.15);
+}
+.host-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ═══════════════════════════════════════
    TRUST BAR UPDATES
 ═══════════════════════════════════════ */
 .trust-intro { max-width: 560px; }
@@ -1558,6 +1597,19 @@ section { padding: 100px 0; }
             <p class="host-name">Meet Your Hosts</p>
             <p class="host-bio">We are Steve and Henrietta Holbrooks, and our roots in North Carolina run deep. Having spent decades hiking the trails and cruising the Blue Ridge Parkway, we've developed a profound appreciation for the serenity and beauty of these mountains.</p>
             <p class="host-bio">After our first stay at Knob View in August 2013, we knew we had found something special. The property's unique tranquility and stunning views offered a peace we hadn't found anywhere else. Whether we are out kayaking or exploring local mountain heritage, our goal is to provide a stay that reflects the same warmth and adventure we've enjoyed here for years. We invite you to experience the best of the Blue Ridge from a home that holds a very special place in our hearts.</p>
+          </div>
+        </div>
+
+        <!-- ═══════ HOST VIDEO ═══════ -->
+        <div class="host-video-block reveal">
+          <p class="section-eyebrow" style="margin:28px 0 12px;">Take a Tour</p>
+          <div class="host-video">
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/LC2gn-VvixM?rel=0"
+              title="Knobview Retreat — Video Tour"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen></iframe>
           </div>
         </div>
 
